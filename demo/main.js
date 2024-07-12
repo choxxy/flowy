@@ -63,17 +63,8 @@ document.addEventListener("DOMContentLoaded", function(){
         }
     }
     addEventListenerMulti("click", disabledClick, false, ".side");
-    document.getElementById("close").addEventListener("click", function(){
-       if (rightcard) {
-           rightcard = false;
-           document.getElementById("properties").classList.remove("expanded");
-           setTimeout(function(){
-                document.getElementById("propwrap").classList.remove("itson"); 
-           }, 300);
-            tempblock.classList.remove("selectedblock");
-       } 
-    });
-    
+
+
 document.getElementById("removeblock").addEventListener("click", function(){
  flowy.deleteBlocks();
 });
@@ -89,17 +80,62 @@ var beginTouch = function (event) {
 var checkTouch = function (event) {
     aclick = false;
 }
-var doneTouch = function (event) {
+var doneTouch = function(event) {
     if (event.type === "mouseup" && aclick && !noinfo) {
-      if (!rightcard && event.target.closest(".block") && !event.target.closest(".block").classList.contains("dragging")) {
-            tempblock = event.target.closest(".block");
-            rightcard = true;
-            document.getElementById("properties").classList.add("expanded");
-            document.getElementById("propwrap").classList.add("itson");
-            tempblock.classList.add("selectedblock");
-       } 
+        if (event.target.closest(".block") && !event.target.closest(".block").classList.contains("dragging")) {
+            var blockType = event.target.closest(".block").querySelector(".blockelemtype").value;
+            var propId = 'properties-' + blockType;
+            if (!document.getElementById(propId)) {
+                createPropertiesDiv(blockType);
+            }
+            showPropertiesDiv(propId);
+            var selectedblock = document.querySelectorAll(".selectedblock");
+            for (var i = 0; i < selectedblock.length; i++) {
+                var str = selectedblock[i].classList.remove("selectedblock");
+            }
+            event.target.closest(".block").classList.add("selectedblock");        }
     }
 }
+
+function createPropertiesDiv(blockType) {
+    var div = document.createElement("div");
+    div.id = 'properties-' + blockType;
+    div.className = 'properties';
+    div.innerHTML = '<div id="close"><img src="assets/close.svg"></div><p id="header2">Properties for Block ' + blockType + '</p>';
+    document.getElementById("properties-container").appendChild(div);
+}
+
+function showPropertiesDiv(propId) {
+    var props = document.querySelectorAll(".properties");
+    props.forEach(function(prop) {
+        prop.style.display = 'none'; // Verberg alle properties divs
+    });
+    var activeProp = document.getElementById(propId);
+    activeProp.style.display = 'block'; // Toon de relevante properties div
+    activeProp.classList.add("expanded");
+    document.getElementById("propwrap").classList.add("itson");
+}
+
+function closePropertiesDiv() {
+    var expandedProps = document.querySelector(".properties.expanded");
+    if (expandedProps) {
+        expandedProps.classList.remove("expanded");
+        expandedProps.style.display = 'none'; // Verberg de div
+        document.getElementById("propwrap").classList.remove("itson");
+    }
+    var selectedBlock = document.querySelector(".block.selectedblock");
+    if (selectedBlock) {
+        selectedBlock.classList.remove("selectedblock");
+    }
+}
+
+document.addEventListener("click", function(event) {
+    if (event.target.closest("#close")) {
+        closePropertiesDiv();
+    }
+});
+
+
 addEventListener("mousedown", beginTouch, false);
 addEventListener("mousemove", checkTouch, false);
 addEventListener("mouseup", doneTouch, false);
