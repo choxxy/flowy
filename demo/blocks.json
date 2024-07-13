@@ -1,0 +1,18 @@
+[
+  {
+    "blockelemtype": "1",
+    "blocktitle": "New visitor",
+    "blockdesc": "Triggers when somebody visits a specified page",
+    "blockimg": "assets/eye.svg",
+    "blockimgblue": "assets/eyeblue.svg",
+    "blockinfo": "When a new visitor goes to Site 1"
+  },
+  {
+    "blockelemtype": "2",
+    "blocktitle": "Action is performeddddd",
+    "blockdesc": "Triggers when somebody performs a specified action",
+    "blockimg": "assets/action.svg",
+    "blockimgblue": "assets/actionblue.svg",
+    "blockinfo": "When Action 1 is performed"
+  }
+]
