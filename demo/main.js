@@ -122,6 +122,12 @@ function createPropertiesDiv(blockType) {
     return b.blockelemtype === blockType;
   });
 
+  //first block
+  var block = blocks.find(function(b) { return b.blockelemtype === blockType; }) || { fieldtypes: [] };
+  if (block.fieldtypes.length === 0) {
+    block.fieldtypes = [{name: "Name", type: "text"}];
+  }
+
   // Check if the block and fieldtypes property exist
   if (block && block.fieldtypes) {
     // Generate the properties based on the field types defined in the block
@@ -130,9 +136,9 @@ function createPropertiesDiv(blockType) {
       if (field.type === 'text') {
         inputElement = '<input type="text" name="' + field.name + '" placeholder="' + field.name + '">';
       } else if (field.type === 'select') {
-        var options = field.options.map(function(option) {
+        var options = field.options ? field.options.map(function(option) {
           return '<option value="' + option + '">' + option + '</option>';
-        }).join('');
+        }).join('') : '';
         inputElement = '<select name="' + field.name + '">' + options + '</select>';
       }
       div.innerHTML += '<div class="inputlabel">' + field.name + '</div><div class="inputfield">' + inputElement + '</div>';
@@ -141,7 +147,6 @@ function createPropertiesDiv(blockType) {
 
   div.innerHTML += '<div id=propswitch><div id=dataprop>Data</div><div id=alertprop>Alerts</div><div id=logsprop>Logs</div></div><div id=proplist><p class=inputlabel>Select database<div class=dropme>Database 1 <img src=assets/dropdown.svg></div><p class=inputlabel>Check properties<div class=dropme>All<img src=assets/dropdown.svg></div><div class=checkus><img src=assets/checkon.svg><p>Log on successful performance</div><div class=checkus><img src=assets/checkoff.svg><p>Give priority to this block</div></div><div id="divisionthing"></div><div id="removeblock">Delete blocks</div>';
 
-  document.getElementById("properties-container").innerHTML = ''; // Clear the properties-container div
   document.getElementById("properties-container").appendChild(div);
 }
 
@@ -175,6 +180,15 @@ document.addEventListener("click", function(event) {
     }
 });
 
+var saveButton = document.getElementById("saveButton");
+saveButton.addEventListener("click", function(event) {
+
+  var json = JSON.stringify(flowy.output());    // test -> localStorage
+  var file = new File([json], "test.json", {type: "application/octet-stream"});
+  var blobUrl = (URL || webkitURL).createObjectURL(file);
+  window.location = blobUrl;
+
+});
 
 addEventListener("mousedown", beginTouch, false);
 addEventListener("mousemove", checkTouch, false);

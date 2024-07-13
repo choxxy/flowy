@@ -14,6 +14,16 @@
       {
         "name": "Visitor ID",
         "type": "text"
+      },
+      {
+        "name": "Action Type",
+        "type": "select",
+        "options": ["Type 1", "Type 2", "Type 3"]
+      },
+      {
+        "name": "Action Type",
+        "type": "checkbox",
+        "options": ["Type 1", "Type 2", "Type 3"]
       }
     ]
   },
