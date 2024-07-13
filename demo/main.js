@@ -112,11 +112,37 @@ var doneTouch = function(event) {
 }
 
 function createPropertiesDiv(blockType) {
-    var div = document.createElement("div");
-    div.id = 'properties-' + blockType;
-    div.className = 'properties';
-    div.innerHTML = '<div id="close"><img src="assets/close.svg"></div><p id="header2">Properties for Block ' + blockType + '</p> <div id=propswitch><div id=dataprop>Data</div><div id=alertprop>Alerts</div><div id=logsprop>Logs</div></div><div id=proplist><p class=inputlabel>Select database<div class=dropme>Database 1 <img src=assets/dropdown.svg></div><p class=inputlabel>Check properties<div class=dropme>All<img src=assets/dropdown.svg></div><div class=checkus><img src=assets/checkon.svg><p>Log on successful performance</div><div class=checkus><img src=assets/checkoff.svg><p>Give priority to this block</div></div><div id="divisionthing"></div><div id="removeblock">Delete blocks</div>';
-    document.getElementById("properties-container").appendChild(div);
+  var div = document.createElement("div");
+  div.id = 'properties-' + blockType;
+  div.className = 'properties';
+  div.innerHTML = '<div id="close"><img src="assets/close.svg"></div><p id="header2">Properties for Block ' + blockType + '</p>';
+
+  // Get the block from the blocks.json file based on the blockType
+  var block = blocks.find(function(b) {
+    return b.blockelemtype === blockType;
+  });
+
+  // Check if the block and fieldtypes property exist
+  if (block && block.fieldtypes) {
+    // Generate the properties based on the field types defined in the block
+    block.fieldtypes.forEach(function(field) {
+      var inputElement;
+      if (field.type === 'text') {
+        inputElement = '<input type="text" name="' + field.name + '" placeholder="' + field.name + '">';
+      } else if (field.type === 'select') {
+        var options = field.options.map(function(option) {
+          return '<option value="' + option + '">' + option + '</option>';
+        }).join('');
+        inputElement = '<select name="' + field.name + '">' + options + '</select>';
+      }
+      div.innerHTML += '<div class="inputlabel">' + field.name + '</div><div class="inputfield">' + inputElement + '</div>';
+    });
+  }
+
+  div.innerHTML += '<div id=propswitch><div id=dataprop>Data</div><div id=alertprop>Alerts</div><div id=logsprop>Logs</div></div><div id=proplist><p class=inputlabel>Select database<div class=dropme>Database 1 <img src=assets/dropdown.svg></div><p class=inputlabel>Check properties<div class=dropme>All<img src=assets/dropdown.svg></div><div class=checkus><img src=assets/checkon.svg><p>Log on successful performance</div><div class=checkus><img src=assets/checkoff.svg><p>Give priority to this block</div></div><div id="divisionthing"></div><div id="removeblock">Delete blocks</div>';
+
+  document.getElementById("properties-container").innerHTML = ''; // Clear the properties-container div
+  document.getElementById("properties-container").appendChild(div);
 }
 
 function showPropertiesDiv(propId) {
